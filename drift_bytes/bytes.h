@@ -1,10 +1,11 @@
 // Copyright 2023 PANDA GmbH
 
-#ifndef DRIFT_BYTES_BYTES_H
-#define DRIFT_BYTES_BYTES_H
+#ifndef DRIFT_BYTES_BYTES_H_
+#define DRIFT_BYTES_BYTES_H_
 
 #include <array>
 #include <cassert>
+#include <functional>
 #include <iostream>
 #include <numeric>
 #include <ostream>
@@ -61,12 +62,12 @@ class Variable {
 
  private:
   template <class Archive>
-  void save(Archive &ar) const {
+  void save(Archive &ar) const {  // NOLINT
     ar(shape_, data_);
   }
 
   template <class Archive>
-  void load(Archive &ar) {
+  void load(Archive &ar) {  // NOLINT
     ar(shape_, data_);
   }
 
@@ -75,7 +76,6 @@ class Variable {
   std::vector<T> data_;
   std::vector<size_t> shape_;
 };
-
 
 /**
  * Serializes and deserializes variables.
@@ -109,4 +109,4 @@ class Bytes {
 };
 
 }  // namespace drift_bytes
-#endif  // DRIFT_BYTES_BYTES_H
+#endif  // DRIFT_BYTES_BYTES_H_

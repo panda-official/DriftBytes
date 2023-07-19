@@ -13,7 +13,7 @@ using drift_bytes::Variable;
 
 TEST_CASE("Scalars") {
   auto val = GENERATE(
-      bool(1), std::numeric_limits<uint8_t>::max(),
+      true, std::numeric_limits<uint8_t>::max(),
       std::numeric_limits<uint16_t>::max(),
       std::numeric_limits<uint32_t>::max(),
       std::numeric_limits<uint64_t>::max(), std::numeric_limits<int8_t>::max(),
