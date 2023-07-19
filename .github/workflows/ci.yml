@@ -1,4 +1,4 @@
-name: CI/CD actions [Linux]
+name: CI/CD actions
 on:
   push:
     branches: [ master, develop ]
