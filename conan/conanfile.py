@@ -20,7 +20,7 @@ class WaveletBufferConan(ConanFile):
         "fPIC": True,
     }
 
-    requires = "cereal/1.3.2",
+    requires = ("cereal/1.3.2",)
 
     # Binary configuration
     settings = "os", "compiler", "build_type", "arch"
@@ -36,8 +36,6 @@ class WaveletBufferConan(ConanFile):
     def config_options(self):
         if self.settings.os == "Windows":
             del self.options.fPIC
-
-        self.settings.build_type = "Release"
 
     def source(self):
         local_source = os.getenv("CONAN_SOURCE_DIR")

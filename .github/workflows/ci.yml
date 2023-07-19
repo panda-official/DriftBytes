@@ -60,19 +60,22 @@ jobs:
         run: |
           pipx install conan==${{ env.CONAN_VERSION }}
 
-      - name: Build tests, benchmarks and examples
+      - name: Build tests
+        shell: bash
         run: |
           mkdir build
           cd build
           conan install ../conan --build=missing -of .
-          cmake .. -DCMAKE_TOOLCHAIN_FILE=./build/Release/generators/conan_toolchain.cmake -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+          TOOLCHAIN_PATH=`find . | grep toolchain`
+          cmake .. -DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_PATH} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+
           cmake --build . -j --config ${{ matrix.build_type }}
 
       - name: Run tests
         run: |
           cd build
           ctest -V --output-on-failure -C ${{ matrix.build_type }}
-        
+
 
   conan:
     needs: [ build_test ]
