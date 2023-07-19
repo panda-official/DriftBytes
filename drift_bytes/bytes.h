@@ -75,27 +75,11 @@ class Variable {
   std::vector<T> data_;
   std::vector<size_t> shape_;
 };
-//
-// template <typename T, size_t N>
-// std::array<char, N> encode(const T &val) {
-//  std::array<char, N> bytes = {};
-//  for (size_t i = 0; i < sizeof(T); ++i) {
-//    bytes[i] = ((val >> (i * 8)) & 0xFF);
-//  }
-//
-//  return bytes;
-//}
-//
-// template <typename T, size_t N>
-// T decode(std::array<char, N> bytes) {
-//  static_assert(N == sizeof(T));
-//  T res = 0;
-//  for (size_t i = 0; i < sizeof(T); ++i) {
-//    res |= static_cast<T>(bytes[i]) << (i * 8);
-//  }
-//  return res;
-//}
 
+
+/**
+ * Serializes and deserializes variables.
+ */
 class Bytes {
  public:
   Bytes() = default;
