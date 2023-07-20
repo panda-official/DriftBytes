@@ -1,11 +1,21 @@
+"""Bindings for the C++ implementation of the Bytes class."""
 from typing import List
 
 import drift_bytes._drift_bytes as impl
 
 
 class Bytes(impl.Bytes):
+    """Bytes class"""
+
     def __init__(self):
         super(Bytes, self).__init__()
+
+    @classmethod
+    def from_bytes(cls, data: bytes) -> "Bytes":
+        return impl.Bytes.from_bytes(data)
+
+    def to_bytes(self) -> bytes:
+        return super(Bytes, self).to_bytes()
 
     def get_bool(self) -> bool:
         return super(Bytes, self).get_bool()

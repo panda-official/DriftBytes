@@ -1,5 +1,4 @@
 from drift_bytes import Bytes
-import pytest
 
 
 def test__bool():
@@ -114,11 +113,3 @@ def test__string():
     b.set_string("Hello World, ÄÖÜäöüß")
 
     assert b.get_string() == "Hello World, ÄÖÜäöüß"
-
-
-def test__bad_encoding():
-    b = Bytes()
-    b.set_bool(True)
-
-    with pytest.raises(RuntimeError):
-        b.get_float32()

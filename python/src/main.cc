@@ -8,8 +8,12 @@ using drift_bytes::Bytes;
 
 PYBIND11_MODULE(_drift_bytes, m) {
   auto klass = py::class_<drift_bytes::Bytes>(m, "Bytes");
-  klass
-      .def(py::init<>())
+  klass.def(py::init<>())
+      .def_static(
+          "from_bytes",
+          [](py::bytes bytes) { return drift_bytes::Bytes(std::move(bytes)); })
+      .def("to_bytes",
+           [](drift_bytes::Bytes &bytes) { return py::bytes(bytes.str()); })
       // Scalar types
       .def("get_bool",
            [](drift_bytes::Bytes &bytes) { return bytes.scalar<bool>(); })
