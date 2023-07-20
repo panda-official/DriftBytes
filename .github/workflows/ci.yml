@@ -33,18 +33,18 @@ jobs:
       - name: Run clang-format
         run: find {tests,drift_bytes}/ -name "*.cc" -o -name "*.h" | xargs clang-format --dry-run --Werror
 
-#  black:
-#    runs-on: ubuntu-22.04
-#    name: Check PEP-8
-#    steps:
-#      - uses: actions/checkout@v3
-#      - name: Install cpplint
-#        run: pip3 install -r python/requirements/format.txt
-#      - name: Check
-#        run: black --check .
+  black:
+    runs-on: ubuntu-22.04
+    name: Check PEP-8
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install cpplint
+        run: pip3 install -r format.txt
+      - name: Check
+        run: black --check .
 
   build_test:
-    needs: [ cpplint ]
+    needs: [ cpplint, black]
     runs-on: ${{ matrix.os }}
     name: Build and test C++ part
     strategy:
@@ -139,111 +139,111 @@ jobs:
           conan user -p ${{secrets.CONAN_PASSWORD}} -r panda --skip-auth ${{secrets.CONAN_LOGIN_USERNAME}}
           conan upload drift_bytes --all --confirm --remote=panda
 
-#  pip:
-#    name: "Build and test PIP"
-#    needs: [ build_test ]
-#    runs-on: ${{ matrix.os }}
-#    strategy:
-#      fail-fast: false
-#      matrix:
-#        os: [ ubuntu-22.04, windows-2019, macos-12 ]
-#        python-version: [ "3.8", "3.9", "3.10", "3.11" ]
-#
-#    steps:
-#      - uses: actions/checkout@v3
-#
-#      - uses: actions/setup-python@v3
-#        with:
-#          python-version: ${{ matrix.python-version }}
-#
-#      - name: Build and install
-#        run: |
-#          pip install -r python/requirements/test.txt
-#          pip install --verbose .
-#
-#      - name: Lint Test
-#        run: pylint python/tests
-#
-#      - name: Run Test
-#        run: pytest python/tests
-#
-#  build_sdist:
-#    name: "Build and test SDist"
-#    needs: [ pip ]
-#    runs-on: ubuntu-20.04
-#    if: ${{ (github.ref == 'refs/heads/develop') || (startsWith(github.event.ref, 'refs/tags/v')) }}
-#    steps:
-#      - uses: actions/checkout@v3
-#
-#      - name: Prefix version for development version
-#        if: ${{ (github.ref == 'refs/heads/develop') }}
-#        run: echo "VERSION_SUFFIX=$(echo ${GITHUB_RUN_ID})" >> $GITHUB_ENV
-#
-#      - name: Install conan
-#        run: pipx install conan
-#
-#      - name: Create sdist package and build binary from it
-#        run: |
-#          pipx run build --sdist
-#
-#      - name: Check metadata
-#        run: |
-#          pipx run twine check dist/*
-#
-#      - name: Install SDist package
-#        run: pip install dist/* --verbose --isolated
-#
-#      - uses: actions/upload-artifact@v2
-#        with:
-#          path: dist/*.tar.gz
-#
-#  build_wheels:
-#    name: "Build wheels on ${{ matrix.os }}"
-#    needs: [ pip ]
-#    runs-on: ${{ matrix.os }}
-#    strategy:
-#      fail-fast: false
-#      matrix:
-#        os: [ ubuntu-22.04, windows-2019, macos-12 ]
-#
-#    if: ${{ (github.ref == 'refs/heads/develop') || (startsWith(github.event.ref, 'refs/tags/v')) }}
-#    steps:
-#      - uses: actions/checkout@v3
-#
-#      - name: Prefix version for development version
-#        if: ${{ (github.ref == 'refs/heads/develop') }}
-#        run: echo "VERSION_SUFFIX=$(echo ${GITHUB_RUN_ID})" >> $GITHUB_ENV
-#
-#      - name: Build wheels
-#        uses: pypa/cibuildwheel@v2.13.1
-#
-#      - name: Verify clean directory
-#        run: |
-#          git diff --exit-code
-#        shell: bash
-#
-#      - name: Upload wheels
-#        uses: actions/upload-artifact@v2
-#        with:
-#          path: wheelhouse/*.whl
-#
-#  upload_all:
-#    name: "Upload packages if release"
-#    needs: [ build_wheels, build_sdist ]
-#    runs-on: ubuntu-22.04
-#    #if: github.event_name == 'release' && github.event.action == 'published'
-#    if: ${{ startsWith(github.event.ref, 'refs/tags/v') }}
-#
-#    steps:
-#      - uses: actions/setup-python@v2
-#
-#      - uses: actions/download-artifact@v2
-#        with:
-#          name: artifact
-#          path: dist
-#
-#      - name: "Upload to PyPI"
-#        uses: pypa/gh-action-pypi-publish@v1.5.0
-#        with:
-#          user: ${{ secrets.PYPI_USERNAME }}
-#          password: ${{ secrets.PYPI_PASSWORD }}
+  pip:
+    name: "Build and test PIP"
+    needs: [ build_test ]
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-22.04, windows-2019, macos-12 ]
+        python-version: [ "3.8", "3.9", "3.10", "3.11" ]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Build and install
+        run: |
+          pip install -r python/requirements/test.txt
+          pip install --verbose .
+
+      - name: Lint Test
+        run: pylint python/tests
+
+      - name: Run Test
+        run: pytest python/tests
+
+  build_sdist:
+    name: "Build and test SDist"
+    needs: [ pip ]
+    runs-on: ubuntu-20.04
+    if: ${{ (github.ref == 'refs/heads/develop') || (startsWith(github.event.ref, 'refs/tags/v')) }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Prefix version for development version
+        if: ${{ (github.ref == 'refs/heads/develop') }}
+        run: echo "VERSION_SUFFIX=$(echo ${GITHUB_RUN_ID})" >> $GITHUB_ENV
+
+      - name: Install conan
+        run: pipx install conan
+
+      - name: Create sdist package and build binary from it
+        run: |
+          pipx run build --sdist
+
+      - name: Check metadata
+        run: |
+          pipx run twine check dist/*
+
+      - name: Install SDist package
+        run: pip install dist/* --verbose --isolated
+
+      - uses: actions/upload-artifact@v2
+        with:
+          path: dist/*.tar.gz
+
+  build_wheels:
+    name: "Build wheels on ${{ matrix.os }}"
+    needs: [ pip ]
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-22.04, windows-2019, macos-12 ]
+
+    if: ${{ (github.ref == 'refs/heads/develop') || (startsWith(github.event.ref, 'refs/tags/v')) }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Prefix version for development version
+        if: ${{ (github.ref == 'refs/heads/develop') }}
+        run: echo "VERSION_SUFFIX=$(echo ${GITHUB_RUN_ID})" >> $GITHUB_ENV
+
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v2.13.1
+
+      - name: Verify clean directory
+        run: |
+          git diff --exit-code
+        shell: bash
+
+      - name: Upload wheels
+        uses: actions/upload-artifact@v2
+        with:
+          path: wheelhouse/*.whl
+
+  upload_all:
+    name: "Upload packages if release"
+    needs: [ build_wheels, build_sdist ]
+    runs-on: ubuntu-22.04
+    #if: github.event_name == 'release' && github.event.action == 'published'
+    if: ${{ startsWith(github.event.ref, 'refs/tags/v') }}
+
+    steps:
+      - uses: actions/setup-python@v2
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: artifact
+          path: dist
+
+      - name: "Upload to PyPI"
+        uses: pypa/gh-action-pypi-publish@v1.5.0
+        with:
+          user: ${{ secrets.PYPI_USERNAME }}
+          password: ${{ secrets.PYPI_PASSWORD }}
