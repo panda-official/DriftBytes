@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-22.04
     name: Check C++ format and style
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Install dependencies
         run: pip3 install -r format.txt
@@ -37,7 +37,7 @@ jobs:
 #    runs-on: ubuntu-22.04
 #    name: Check PEP-8
 #    steps:
-#      - uses: actions/checkout@v2
+#      - uses: actions/checkout@v3
 #      - name: Install cpplint
 #        run: pip3 install -r python/requirements/format.txt
 #      - name: Check
@@ -52,7 +52,7 @@ jobs:
         build_type: [ Debug, Release ]
         os: [ ubuntu-22.04, windows-2019, macos-12 ]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
@@ -98,7 +98,7 @@ jobs:
             dep_install_cmd: "sudo apt-get install g++-aarch64-linux-gnu"
             conan_tail: " -pr:b default -pr:h ./linux_armv8 -tf=None"
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Install conan
         run: pipx install conan==${{ env.CONAN_VERSION }}
@@ -137,7 +137,7 @@ jobs:
         run: |
           conan remote add panda https://conan.panda.technology/artifactory/api/conan/drift
           conan user -p ${{secrets.CONAN_PASSWORD}} -r panda --skip-auth ${{secrets.CONAN_LOGIN_USERNAME}}
-          conan upload wavelet_buffer --all --confirm --remote=panda
+          conan upload drift_bytes --all --confirm --remote=panda
 
 #  pip:
 #    name: "Build and test PIP"
@@ -173,7 +173,7 @@ jobs:
 #    runs-on: ubuntu-20.04
 #    if: ${{ (github.ref == 'refs/heads/develop') || (startsWith(github.event.ref, 'refs/tags/v')) }}
 #    steps:
-#      - uses: actions/checkout@v2
+#      - uses: actions/checkout@v3
 #
 #      - name: Prefix version for development version
 #        if: ${{ (github.ref == 'refs/heads/develop') }}
@@ -208,7 +208,7 @@ jobs:
 #
 #    if: ${{ (github.ref == 'refs/heads/develop') || (startsWith(github.event.ref, 'refs/tags/v')) }}
 #    steps:
-#      - uses: actions/checkout@v2
+#      - uses: actions/checkout@v3
 #
 #      - name: Prefix version for development version
 #        if: ${{ (github.ref == 'refs/heads/develop') }}
