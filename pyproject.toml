@@ -20,3 +20,6 @@ build-verbosity = '3'
 [tool.cibuildwheel.linux]
 archs = "x86_64"
 environment-pass = ["VERSION_SUFFIX"]
+
+[tool.pylint.MASTER]
+good-names = "b"

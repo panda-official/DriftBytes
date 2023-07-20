@@ -1,8 +1,11 @@
-from drift_bytes import Bytes
+"""Test for Bytes"""
 import pytest
+
+from drift_bytes import Bytes
 
 
 def test__bad_encoding():
+    """Test bad encoding"""
     b = Bytes()
     b.set_bool(True)
 
@@ -11,6 +14,7 @@ def test__bad_encoding():
 
 
 def test_serialization():
+    """Test serialization"""
     b = Bytes()
     b.set_int8(42)
 

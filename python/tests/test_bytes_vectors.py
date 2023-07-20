@@ -1,8 +1,9 @@
+"""Test vectors in Bytes class"""
 from drift_bytes import Bytes
 
 
 def test__bool_vec():
-    """Test bool vectors."""
+    """Test bool vectors"""
     b = Bytes()
     b.set_bool_vec([True, False, True])
     assert b.get_bool_vec() == [True, False, True]
@@ -11,7 +12,7 @@ def test__bool_vec():
 
 
 def test__int8_vec():
-    """Test int8 vectors."""
+    """Test int8 vectors"""
     b = Bytes()
     b.set_int8_vec([0, 127, -128])
     assert b.get_int8_vec() == [0, 127, -128]
@@ -20,7 +21,7 @@ def test__int8_vec():
 
 
 def test__int16_vec():
-    """Test int16 vectors."""
+    """Test int16 vectors"""
     b = Bytes()
     b.set_int16_vec([0, 32767, -32768])
     assert b.get_int16_vec() == [0, 32767, -32768]
@@ -29,7 +30,7 @@ def test__int16_vec():
 
 
 def test__int32_vec():
-    """Test int32 vectors."""
+    """Test int32 vectors"""
     b = Bytes()
     b.set_int32_vec([0, 2147483647, -2147483648])
     assert b.get_int32_vec() == [0, 2147483647, -2147483648]
@@ -38,7 +39,7 @@ def test__int32_vec():
 
 
 def test__int64_vec():
-    """Test int64 vectors."""
+    """Test int64 vectors"""
     b = Bytes()
     b.set_int64_vec([0, 9223372036854775807, -9223372036854775808])
     assert b.get_int64_vec() == [0, 9223372036854775807, -9223372036854775808]
@@ -47,7 +48,7 @@ def test__int64_vec():
 
 
 def test__uint8_vec():
-    """Test uint8 vectors."""
+    """Test uint8 vectors"""
     b = Bytes()
     b.set_uint8_vec([0, 255])
     assert b.get_uint8_vec() == [0, 255]
@@ -56,7 +57,7 @@ def test__uint8_vec():
 
 
 def test__uint16_vec():
-    """Test uint16 vectors."""
+    """Test uint16 vectors"""
     b = Bytes()
     b.set_uint16_vec([0, 65535])
     assert b.get_uint16_vec() == [0, 65535]
@@ -65,7 +66,7 @@ def test__uint16_vec():
 
 
 def test__uint32_vec():
-    """Test uint32 vectors."""
+    """Test uint32 vectors"""
     b = Bytes()
     b.set_uint32_vec([0, 4294967295])
     assert b.get_uint32_vec() == [0, 4294967295]
@@ -74,7 +75,7 @@ def test__uint32_vec():
 
 
 def test__uint64_vec():
-    """Test uint64 vectors."""
+    """Test uint64 vectors"""
     b = Bytes()
     b.set_uint64_vec([0, 18446744073709551615])
     assert b.get_uint64_vec() == [0, 18446744073709551615]
@@ -83,7 +84,7 @@ def test__uint64_vec():
 
 
 def test__float32_vec():
-    """Test float32 vectors."""
+    """Test float32 vectors"""
     b = Bytes()
     b.set_float32_vec([0.0, 1.0, -1.0])
     assert b.get_float32_vec() == [0.0, 1.0, -1.0]
@@ -92,7 +93,7 @@ def test__float32_vec():
 
 
 def test__float64_vec():
-    """Test float64 vectors."""
+    """Test float64 vectors"""
     b = Bytes()
     b.set_float64_vec([0.0, 1.0, -1.0])
     assert b.get_float64_vec() == [0.0, 1.0, -1.0]
@@ -101,7 +102,7 @@ def test__float64_vec():
 
 
 def test__string_vec():
-    """Test string vectors."""
+    """Test string vectors"""
     b = Bytes()
     b.set_string_vec(["", "a", "abc"])
     assert b.get_string_vec() == ["", "a", "abc"]

@@ -1,7 +1,9 @@
+"""Test for scalar types"""
 from drift_bytes import Bytes
 
 
 def test__bool():
+    """Should be able to set and get bools"""
     b = Bytes()
     b.set_bool(True)
     assert b.get_bool()
@@ -11,6 +13,7 @@ def test__bool():
 
 
 def test__int8():
+    """Should be able to set and get int8s"""
     b = Bytes()
     b.set_int8(0)
     assert b.get_int8() == 0
@@ -23,6 +26,7 @@ def test__int8():
 
 
 def test__int16():
+    """Should be able to set and get int16s"""
     b = Bytes()
     b.set_int16(0)
     assert b.get_int16() == 0
@@ -35,6 +39,7 @@ def test__int16():
 
 
 def test__int32():
+    """Should be able to set and get int32s"""
     b = Bytes()
     b.set_int32(0)
     assert b.get_int32() == 0
@@ -47,6 +52,7 @@ def test__int32():
 
 
 def test__int64():
+    """Should be able to set and get int64s"""
     b = Bytes()
     b.set_int64(0)
     assert b.get_int64() == 0
@@ -59,6 +65,7 @@ def test__int64():
 
 
 def test__uint8():
+    """Should be able to set and get uint8s"""
     b = Bytes()
     b.set_uint8(0)
     assert b.get_uint8() == 0
@@ -68,6 +75,7 @@ def test__uint8():
 
 
 def test__uint16():
+    """Should be able to set and get uint16s"""
     b = Bytes()
     b.set_uint16(0)
     assert b.get_uint16() == 0
@@ -77,6 +85,7 @@ def test__uint16():
 
 
 def test__uint32():
+    """Should be able to set and get uint32s"""
     b = Bytes()
     b.set_uint32(0)
     assert b.get_uint32() == 0
@@ -86,6 +95,7 @@ def test__uint32():
 
 
 def test__uint64():
+    """Should be able to set and get uint64s"""
     b = Bytes()
     b.set_uint64(0)
     assert b.get_uint64() == 0
@@ -95,6 +105,7 @@ def test__uint64():
 
 
 def test__float32():
+    """Should be able to set and get float32s"""
     b = Bytes()
     b.set_float32(1.125)
 
@@ -102,6 +113,7 @@ def test__float32():
 
 
 def test__float64():
+    """Should be able to set and get float64s"""
     b = Bytes()
     b.set_float64(1.123456)
 
@@ -109,6 +121,7 @@ def test__float64():
 
 
 def test__string():
+    """Should be able to set and get strings"""
     b = Bytes()
     b.set_string("Hello World, ÄÖÜäöüß")
 
