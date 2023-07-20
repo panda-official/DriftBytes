@@ -1,27 +1,17 @@
-add_executable(
-    unit_tests
-    bytes_test.cc
+add_executable(unit_tests bytes_test.cc)
+
+target_link_libraries(unit_tests PRIVATE ${TARGET_NAME} Catch2::Catch2WithMain)
+
+include(FetchContent)
+
+fetchcontent_declare(
+    Catch2
+    GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+    GIT_TAG
+        v3.4.0 # or a later release
 )
 
-target_link_libraries(unit_tests PRIVATE ${PROJECT_NAME})
-target_link_libraries(unit_tests PRIVATE Catch2::Catch2WithMain)
-
-# to test internal classes
-target_include_directories(
-    unit_tests
-    PRIVATE $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>/sources
-)
-
-Include(FetchContent)
-
-FetchContent_Declare(
-        Catch2
-        GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-        GIT_TAG        v3.4.0 # or a later release
-)
-
-FetchContent_MakeAvailable(Catch2)
-target_link_libraries(unit_tests PRIVATE Catch2::Catch2WithMain)
+fetchcontent_makeavailable(Catch2)
 
 include(CTest)
 include(Catch)
