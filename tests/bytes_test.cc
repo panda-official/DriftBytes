@@ -9,7 +9,6 @@
 #include "catch2/generators/catch_generators.hpp"
 
 using drift_bytes::Bytes;
-using drift_bytes::Variable;
 
 TEST_CASE("Scalars") {
   auto val = GENERATE(
@@ -24,15 +23,12 @@ TEST_CASE("Scalars") {
   CAPTURE(val);
 
   auto bytes = drift_bytes::Bytes();
-  bytes << Variable(val);
+  bytes.scalar(val);
 
-  Variable<decltype(val)> res;
-  bytes >> res;
+  decltype(val) new_val;
+  new_val = bytes.scalar<decltype(val)>();
 
-  REQUIRE(res.shape().size() == 1);
-  REQUIRE(res.shape()[0] == 1);
-  REQUIRE(res.data().size() == 1);
-  REQUIRE(res.data()[0] == val);
+  REQUIRE(new_val == val);
 }
 
 TEST_CASE("Strings") {
@@ -42,15 +38,11 @@ TEST_CASE("Strings") {
   CAPTURE(val);
 
   auto bytes = drift_bytes::Bytes();
-  bytes << Variable(val);
+  bytes.scalar(val);
 
-  Variable<decltype(val)> res;
-  bytes >> res;
+  auto new_val = bytes.scalar<decltype(val)>();
 
-  REQUIRE(res.shape().size() == 1);
-  REQUIRE(res.shape()[0] == 1);
-  REQUIRE(res.data().size() == 1);
-  REQUIRE(res.data()[0] == val);
+  REQUIRE(new_val == val);
 }
 
 TEST_CASE("Vectors") {
@@ -60,14 +52,11 @@ TEST_CASE("Vectors") {
   CAPTURE(val);
 
   auto bytes = drift_bytes::Bytes();
-  bytes << Variable(val);
+  bytes.vec(val);
 
-  Variable<int> res;
-  bytes >> res;
+  auto new_val = bytes.vec<int>();
 
-  REQUIRE(res.shape() == std::vector{val.size()});
-  REQUIRE(res.data().size() == val.size());
-  REQUIRE(res.data() == val);
+  REQUIRE(new_val == val);
 }
 
 TEST_CASE("Matrices") {
@@ -78,12 +67,44 @@ TEST_CASE("Matrices") {
   CAPTURE(val);
 
   auto bytes = drift_bytes::Bytes();
-  bytes << Variable(val);
+  bytes.vec(val);
 
-  Variable<int> res;
-  bytes >> res;
+  auto new_val = bytes.mat<int>();
 
-  REQUIRE(res.shape() == std::vector{val.size(), val[0].size()});
-  REQUIRE(res.data().size() == val.size() * val[0].size());
-  REQUIRE(res.data() == std::vector{1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
+  REQUIRE(new_val == val);
+}
+
+TEST_CASE("Mixed data") {
+  int a;
+  std::vector<float> fvec = {1.0, 2.0, 3.0};
+  std::string s = "Hello World!";
+  std::vector<std::vector<int>> mat = {{1, 2, 3}, {4, 5, 6}};
+
+  auto bytes = drift_bytes::Bytes();
+  bytes.scalar(a);
+  bytes.vec(fvec);
+  bytes.scalar(s);
+  bytes.mat(mat);
+
+  auto new_a = bytes.scalar<decltype(a)>();
+  auto new_fvec = bytes.vec<float>();
+  auto new_s = bytes.scalar<decltype(s)>();
+  auto new_mat = bytes.mat<int>();
+
+  REQUIRE(new_a == a);
+  REQUIRE(new_fvec == fvec);
+  REQUIRE(new_s == s);
+  REQUIRE(new_mat == mat);
+}
+
+TEST_CASE("Serialization") {
+  std::vector<std::vector<int>> mat = {{1, 2, 3}, {4, 5, 6}};
+
+  auto bytes = drift_bytes::Bytes();
+  bytes.mat(mat);
+
+  bytes = drift_bytes::Bytes(bytes.str());
+
+  auto new_mat = bytes.mat<int>();
+  REQUIRE(new_mat == mat);
 }

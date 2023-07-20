@@ -20,88 +20,57 @@
 namespace drift_bytes {
 
 /**
- * @brief A multidimensional variable is a container for data and shape_.
- * @tparam T
- */
-template <typename T>
-class Variable {
- public:
-  Variable() = default;
-
-  Variable(std::vector<T> &&data, std::vector<size_t> &&shape)
-      : data_(data), shape_(shape) {
-    if (std::accumulate(shape.begin(), shape.end(), 1,
-                        std::multiplies<size_t>{}) == data.size()) {
-      throw std::runtime_error("Shape and data size mismatch");
-    }
-  }
-
-  explicit Variable(T scalar) : data_({scalar}), shape_({1}) {}
-
-  explicit Variable(std::vector<T> vec) : data_(vec), shape_({vec.size()}) {}
-
-  explicit Variable(std::vector<std::vector<T>> matrix)
-      : shape_({matrix.size(), matrix[0].size()}) {
-    for (const auto &row : matrix) {
-      if (row.size() != matrix[0].size()) {
-        throw std::runtime_error("Matrix is not rectangular");
-      }
-
-      data_.insert(data_.end(), row.begin(), row.end());
-    }
-  }
-
-  friend std::ostream &operator<<(std::ostream &os, const Variable &variable) {
-    os << "data: " << variable.data_ << " shape_: " << variable.shape_;
-    return os;
-  }
-
-  const std::vector<T> &data() const { return data_; }
-
-  [[nodiscard]] const std::vector<size_t> &shape() const { return shape_; }
-
- private:
-  template <class Archive>
-  void save(Archive &ar) const {  // NOLINT
-    ar(shape_, data_);
-  }
-
-  template <class Archive>
-  void load(Archive &ar) {  // NOLINT
-    ar(shape_, data_);
-  }
-
-  friend class cereal::access;
-
-  std::vector<T> data_;
-  std::vector<size_t> shape_;
-};
-
-/**
  * Serializes and deserializes variables.
  */
 class Bytes {
  public:
+  using Shape = std::vector<size_t>;
+
   Bytes() = default;
-  explicit Bytes(std::string &&bytes);
+  explicit Bytes(std::string &&bytes) { buffer_ << bytes; }
 
   std::string str() const { return buffer_.str(); }
 
   template <typename T>
-  Bytes &operator<<(const Variable<T> &var) {
-    cereal::PortableBinaryOutputArchive archive(
-        buffer_);  // Create an output archive
-    archive(var);  // Write the data to the archive
-    return *this;
+  T scalar() {
+    cereal::PortableBinaryInputArchive archive(buffer_);
+    T t;
+    archive(t);
+    return t;
   }
 
   template <typename T>
-  Bytes &operator>>(Variable<T> &var) {
-    cereal::PortableBinaryInputArchive archive(
-        buffer_);  // Create an input archive
-    archive(var);  // Read the data from the archive
+  std::vector<T> vec() {
+    cereal::PortableBinaryInputArchive archive(buffer_);
+    std::vector<T> t;
+    archive(t);
+    return t;
+  }
 
-    return *this;
+  template <typename T>
+  std::vector<std::vector<T>> mat() {
+    cereal::PortableBinaryInputArchive archive(buffer_);
+    std::vector<std::vector<T>> t;
+    archive(t);
+    return t;
+  }
+
+  template <typename T>
+  void scalar(const T &t) {
+    cereal::PortableBinaryOutputArchive archive(buffer_);
+    archive(t);
+  }
+
+  template <typename T>
+  void vec(const std::vector<T> &t) {
+    cereal::PortableBinaryOutputArchive archive(buffer_);
+    archive(t);
+  }
+
+  template <typename T>
+  void mat(const std::vector<std::vector<T>> &t) {
+    cereal::PortableBinaryOutputArchive archive(buffer_);
+    archive(t);
   }
 
  private:

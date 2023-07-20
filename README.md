@@ -24,23 +24,19 @@ which is suitable for non-floating point data.
 ## Usage Example
 
 ```c++
-#include <iostream>
 #include <drift_bytes/bytes.h>
 
-using drift_bytes::Bytes;
-using drift_bytes::Variable;
+#include <iostream>
 
+using drift_bytes::Bytes;
 
 int main() {
-  uint32_t val = 42;
+    uint8_t val{42};
+    auto bytes = Bytes();
+    bytes.scalar(val);
+    auto new_val = bytes.scalar<uint8_t>();
 
-  auto bytes = Bytes();
-  bytes << Variable(val);
-
-  Variable<uint32_t> res;
-  bytes >> res;
-
-  std::cout << res.data()[0] << std::endl;
+    std::cout << new_val << std::endl;
 }
 ```
 
