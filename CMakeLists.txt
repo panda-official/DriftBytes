@@ -4,12 +4,44 @@ project(drift_bytes VERSION 0.1.0 LANGUAGES CXX)
 
 option(DB_BUILD_TESTS "Enable unit tests" OFF)
 
-find_package(Cereal REQUIRED)
-
 set(TARGET_NAME ${PROJECT_NAME})
 add_library(${TARGET_NAME} INTERFACE)
 
 add_library(${TARGET_NAME}::${TARGET_NAME} ALIAS ${TARGET_NAME})
+
+if(SKBUILD)
+    list(APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR})
+    list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
+    set(CMAKE_CURRENT_BINARY_DIR ${CMAKE_BINARY_DIR})
+
+    if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
+        message(
+            STATUS
+            "Downloading conan.cmake from https://github.com/conan-io/cmake-conan"
+        )
+        file(
+            DOWNLOAD
+                "https://raw.githubusercontent.com/conan-io/cmake-conan/0.18.1/conan.cmake"
+                "${CMAKE_BINARY_DIR}/conan.cmake"
+            TLS_VERIFY ON
+        )
+    endif()
+
+    include(${CMAKE_BINARY_DIR}/conan.cmake)
+
+    conan_cmake_configure(REQUIRES
+            cereal/1.3.2
+            GENERATORS CMakeDeps
+    )
+    conan_cmake_autodetect(settings)
+    conan_cmake_install(PATH_OR_REFERENCE .
+            BUILD missing
+            REMOTE conancenter
+            SETTINGS ${settings}
+    )
+endif()
+
+find_package(Cereal REQUIRED)
 
 link_libraries(${TARGET_NAME} cereal::cereal)
 
