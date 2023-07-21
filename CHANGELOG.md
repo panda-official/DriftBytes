@@ -12,4 +12,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Python bindings, [PR-1](https://github.com/panda-official/DriftBytes/pull/1)
-- Initial implementation
+- Initial implementationL

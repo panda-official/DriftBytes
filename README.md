@@ -21,6 +21,10 @@ which is suitable for non-floating point data.
 * conan >= 1.56, < 2.0
 
 
+## Bindings
+
+* [Python](python/README.md)
+
 ## Usage Example
 
 ```c++
