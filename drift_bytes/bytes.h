@@ -56,19 +56,19 @@ class Bytes {
   }
 
   template <typename T>
-  void scalar(const T &t) {
+  void set_scalar(const T &t) {
     cereal::PortableBinaryOutputArchive archive(buffer_);
     archive(t);
   }
 
   template <typename T>
-  void vec(const std::vector<T> &t) {
+  void set_vec(const std::vector<T> &t) {
     cereal::PortableBinaryOutputArchive archive(buffer_);
     archive(t);
   }
 
   template <typename T>
-  void mat(const std::vector<std::vector<T>> &t) {
+  void set_mat(const std::vector<std::vector<T>> &t) {
     cereal::PortableBinaryOutputArchive archive(buffer_);
     archive(t);
   }

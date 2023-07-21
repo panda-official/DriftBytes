@@ -23,7 +23,7 @@ TEST_CASE("Scalars") {
   CAPTURE(val);
 
   auto bytes = drift_bytes::Bytes();
-  bytes.scalar(val);
+  bytes.set_scalar(val);
 
   decltype(val) new_val;
   new_val = bytes.scalar<decltype(val)>();
@@ -38,7 +38,7 @@ TEST_CASE("Strings") {
   CAPTURE(val);
 
   auto bytes = drift_bytes::Bytes();
-  bytes.scalar(val);
+  bytes.set_scalar(val);
 
   auto new_val = bytes.scalar<decltype(val)>();
 
@@ -52,7 +52,7 @@ TEST_CASE("Vectors") {
   CAPTURE(val);
 
   auto bytes = drift_bytes::Bytes();
-  bytes.vec(val);
+  bytes.set_vec(val);
 
   auto new_val = bytes.vec<int>();
 
@@ -67,7 +67,7 @@ TEST_CASE("Matrices") {
   CAPTURE(val);
 
   auto bytes = drift_bytes::Bytes();
-  bytes.vec(val);
+  bytes.set_vec(val);
 
   auto new_val = bytes.mat<int>();
 
@@ -81,10 +81,10 @@ TEST_CASE("Mixed data") {
   std::vector<std::vector<int>> mat = {{1, 2, 3}, {4, 5, 6}};
 
   auto bytes = drift_bytes::Bytes();
-  bytes.scalar(a);
-  bytes.vec(fvec);
-  bytes.scalar(s);
-  bytes.mat(mat);
+  bytes.set_scalar(a);
+  bytes.set_vec(fvec);
+  bytes.set_scalar(s);
+  bytes.set_mat(mat);
 
   auto new_a = bytes.scalar<decltype(a)>();
   auto new_fvec = bytes.vec<float>();
@@ -101,7 +101,7 @@ TEST_CASE("Serialization") {
   std::vector<std::vector<int>> mat = {{1, 2, 3}, {4, 5, 6}};
 
   auto bytes = drift_bytes::Bytes();
-  bytes.mat(mat);
+  bytes.set_mat(mat);
 
   bytes = drift_bytes::Bytes(bytes.str());
 
