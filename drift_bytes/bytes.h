@@ -72,9 +72,9 @@ class Variant {
 
   template <typename T>
   explicit Variant(T value) : type_(), shape_(), data_() {
-    type_ = static_cast<Type>(std::variant<T>(value).index());
     shape_ = {1};
     data_ = {value};
+    type_ = static_cast<Type>(data_[0].index());
   }
 
   template <class T>
