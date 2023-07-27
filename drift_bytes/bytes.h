@@ -12,11 +12,11 @@
 #include <sstream>
 #include <string>
 #include <utility>
+#include <variant>
 #include <vector>
 
 #include <cereal/archives/portable_binary.hpp>
 #include <cereal/types/string.hpp>
-#include <cereal/types/variant.hpp>
 #include <cereal/types/vector.hpp>
 
 namespace drift_bytes {
