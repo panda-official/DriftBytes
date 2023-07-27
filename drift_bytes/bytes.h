@@ -11,6 +11,7 @@
 #include <ostream>
 #include <sstream>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include <cereal/archives/portable_binary.hpp>
