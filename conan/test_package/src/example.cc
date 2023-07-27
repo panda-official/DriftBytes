@@ -7,7 +7,7 @@ using drift_bytes::OutputBuffer;
 using drift_bytes::Variant;
 
 int main() {
-  Variant some_value = 42;
+  Variant some_value{42};
 
   OutputBuffer buffer;
   buffer.push_back(some_value);
