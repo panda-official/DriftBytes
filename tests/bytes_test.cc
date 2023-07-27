@@ -8,103 +8,28 @@
 
 #include "catch2/generators/catch_generators.hpp"
 
-using drift_bytes::Bytes;
+using drift_bytes::InputBuffer;
+using drift_bytes::OutputBuffer;
+using drift_bytes::Shape;
+using drift_bytes::Type;
+using drift_bytes::Variant;
 
-TEST_CASE("Scalars") {
-  auto val = GENERATE(
-      true, std::numeric_limits<uint8_t>::max(),
-      std::numeric_limits<uint16_t>::max(),
-      std::numeric_limits<uint32_t>::max(),
-      std::numeric_limits<uint64_t>::max(), std::numeric_limits<int8_t>::max(),
-      std::numeric_limits<int16_t>::max(), std::numeric_limits<int32_t>::max(),
-      std::numeric_limits<int64_t>::max(), std::numeric_limits<float>::max(),
-      std::numeric_limits<double>::max());
+TEST_CASE("Test") {
+  Variant var1({1, 3}, {1, 2, 3});
+  Variant var2 =
+      GENERATE(Variant({2}, {true, false}), Variant({2}, {1.0, 2.0}),
+               Variant({2}, {"Hello", "World"}), Variant({3}, {1l, 2l, 3l}),
+               Variant({3}, {1ul, 2ul, 3ul}), Variant({3}, {1.0f, 2.0f, 3.0f}));
 
-  CAPTURE(val);
+  OutputBuffer out;
+  out.push_back(var1);
+  out.push_back(var2);
 
-  auto bytes = drift_bytes::Bytes();
-  bytes.set_scalar(val);
+  InputBuffer in(out.str());
 
-  decltype(val) new_val;
-  new_val = bytes.scalar<decltype(val)>();
+  REQUIRE(in.pop() == var1);
+  REQUIRE_FALSE(in.empty());
 
-  REQUIRE(new_val == val);
-}
-
-TEST_CASE("Strings") {
-  std::string val =
-      GENERATE("Hello", "World", "Hello World", "Hello World!", "äöü");
-
-  CAPTURE(val);
-
-  auto bytes = drift_bytes::Bytes();
-  bytes.set_scalar(val);
-
-  auto new_val = bytes.scalar<decltype(val)>();
-
-  REQUIRE(new_val == val);
-}
-
-TEST_CASE("Vectors") {
-  std::vector<int> val = GENERATE(std::vector<int>{1, 2, 3, 4, 5},
-                                  std::vector<int>{1, 2, 3, 4, 5, 6, 7, 8, 9});
-
-  CAPTURE(val);
-
-  auto bytes = drift_bytes::Bytes();
-  bytes.set_vec(val);
-
-  auto new_val = bytes.vec<int>();
-
-  REQUIRE(new_val == val);
-}
-
-TEST_CASE("Matrices") {
-  std::vector<std::vector<int>> val = GENERATE(
-      std::vector<std::vector<int>>{{1, 2}, {3, 4}, {5, 6}, {7, 8}, {9, 10}},
-      std::vector<std::vector<int>>{{1, 2, 3, 4, 5}, {6, 7, 8, 9, 10}});
-
-  CAPTURE(val);
-
-  auto bytes = drift_bytes::Bytes();
-  bytes.set_vec(val);
-
-  auto new_val = bytes.mat<int>();
-
-  REQUIRE(new_val == val);
-}
-
-TEST_CASE("Mixed data") {
-  int a;
-  std::vector<float> fvec = {1.0, 2.0, 3.0};
-  std::string s = "Hello World!";
-  std::vector<std::vector<int>> mat = {{1, 2, 3}, {4, 5, 6}};
-
-  auto bytes = drift_bytes::Bytes();
-  bytes.set_scalar(a);
-  bytes.set_vec(fvec);
-  bytes.set_scalar(s);
-  bytes.set_mat(mat);
-
-  auto new_a = bytes.scalar<decltype(a)>();
-  auto new_fvec = bytes.vec<float>();
-  auto new_s = bytes.scalar<decltype(s)>();
-  auto new_mat = bytes.mat<int>();
-
-  REQUIRE(new_a == a);
-  REQUIRE(new_fvec == fvec);
-  REQUIRE(new_s == s);
-  REQUIRE(new_mat == mat);
-}
-
-TEST_CASE("Serialization") {
-  std::vector<std::vector<int>> mat = {{1, 2, 3}, {4, 5, 6}};
-
-  auto bytes = drift_bytes::Bytes();
-  bytes.set_mat(mat);
-
-  bytes = drift_bytes::Bytes(bytes.str());
-
-  auto new_mat = bytes.mat<int>();
-  REQUIRE(new_mat == mat);
+  REQUIRE(in.pop() == var2);
+  REQUIRE(in.empty());
 }
