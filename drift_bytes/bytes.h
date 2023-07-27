@@ -38,6 +38,10 @@ enum Type : uint8_t {
   kString = 11,
 };
 
+static const std::vector<std::string> kSupportedType = {
+    "bool",   "int8",  "uint8",  "int16",   "uint16",  "int32",
+    "uint32", "int64", "uint64", "float32", "float64", "string"};
+
 using Shape = std::vector<uint32_t>;
 
 using VarArray = std::vector<
@@ -95,6 +99,70 @@ class Variant {
   }
 
   bool operator!=(const Variant &rhs) const { return !(rhs == *this); }
+
+  friend std::ostream &operator<<(std::ostream &os, const Variant &variant) {
+    os << "Variant(type:" << kSupportedType[variant.type_] << ", shape:{";
+    for (auto &dim : variant.shape_) {
+      os << dim << ",";
+    }
+    os << "}, data:{";
+
+    for (auto &value : variant.data_) {
+      switch (variant.type_) {
+        case kBool: {
+          os << std::get<bool>(value) << ", ";
+          break;
+        }
+        case kInt8: {
+          os << std::get<int8_t>(value) << ",";
+          break;
+        }
+        case kUInt8: {
+          os << std::get<uint8_t>(value) << ",";
+          break;
+        }
+        case kInt16: {
+          os << std::get<int16_t>(value) << ",";
+          break;
+        }
+        case kUInt16: {
+          os << std::get<uint16_t>(value) << ",";
+          break;
+        }
+        case kInt32: {
+          os << std::get<int32_t>(value) << ",";
+          break;
+        }
+        case kUInt32: {
+          os << std::get<uint32_t>(value) << ",";
+          break;
+        }
+        case kInt64: {
+          os << std::get<int64_t>(value) << ",";
+          break;
+        }
+        case kUInt64: {
+          os << std::get<uint64_t>(value) << ",";
+          break;
+        }
+        case kFloat32: {
+          os << std::get<float>(value) << ",";
+          break;
+        }
+        case kFloat64: {
+          os << std::get<double>(value) << ",";
+          break;
+        }
+        case kString: {
+          os << std::get<std::string>(value) << ",";
+          break;
+        }
+      }
+    }
+
+    os << "})";
+    return os;
+  }
 
  private:
   Type type_;

@@ -8,15 +8,12 @@
 
 namespace py = pybind11;
 using drift_bytes::InputBuffer;
+using drift_bytes::kSupportedType;
 using drift_bytes::OutputBuffer;
 using drift_bytes::Shape;
 using drift_bytes::Type;
 using drift_bytes::VarArray;
 using drift_bytes::Variant;
-
-static const std::vector<std::string> kSupportedType = {
-    "bool",   "int8",  "uint8",  "int16",   "uint16",  "int32",
-    "uint32", "int64", "uint64", "float32", "float64", "string"};
 
 template <typename T>
 std::vector<T> make_array(Variant variant) {
