@@ -23,3 +23,4 @@ environment-pass = ["VERSION_SUFFIX"]
 
 [tool.pylint.MASTER]
 good-names = "b"
+extension-pkg-allow-list = ["pybind11", "drift_bytes._drift_bytes"]
