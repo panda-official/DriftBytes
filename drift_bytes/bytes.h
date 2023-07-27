@@ -66,6 +66,26 @@ class Variant {
     type_ = static_cast<Type>(data_[0].index());
   }
 
+  template <typename T>
+  explicit Variant(T value) : type_(), shape_(), data_() {
+    type_ = static_cast<Type>(std::variant<T>(value).index());
+    shape_ = {1};
+    data_ = {value};
+  }
+
+  template <class T>
+  operator T() const {
+    if (type_ != static_cast<Type>(std::variant<T>().index())) {
+      throw std::runtime_error("Type mismatch");
+    }
+
+    if (shape_ != Shape{1}) {
+      throw std::runtime_error("Looks like it is a vector");
+    }
+
+    return std::get<T>(data_[0]);
+  }
+
   [[nodiscard]] Type type() const { return type_; }
   [[nodiscard]] const Shape &shape() const { return shape_; }
   [[nodiscard]] const VarArray &data() const { return data_; }
