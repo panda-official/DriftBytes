@@ -16,12 +16,18 @@ using drift_bytes::VarArray;
 using drift_bytes::Variant;
 
 template <typename T>
-std::vector<T> make_array(Variant variant) {
+std::vector<T> make_array(const Variant &variant) {
   std::vector<T> ary(std::accumulate(variant.shape().begin(),
                                      variant.shape().end(), 1,
                                      std::multiplies<int64_t>()));
   for (int i = 0; i < ary.size(); ++i) {
-    ary[i] = std::get<T>(variant.data()[i]);
+    try {
+      ary[i] = std::get<T>(variant.data()[i]);
+    } catch (const std::bad_variant_access &) {
+      throw std::runtime_error(
+          "Type mismatch: " + kSupportedType[variant.type()] +
+          " != " + kSupportedType[std::variant<T>().index()]);
+    }
   }
   return ary;
 }
@@ -32,16 +38,11 @@ PYBIND11_MODULE(_drift_bytes, m) {
 
   auto variant = py::class_<Variant>(m, "Variant");
   variant
-      .def_static("from_bools",
-                  [](Shape shape, std::vector<bool> array) -> Variant {
-                    VarArray var_array(array.size());
-                    for (int i = 0; i < array.size(); ++i) {
-                      var_array[i] =
-                          array[i];  // we do beacuse clang convert bools to int
-                    }
-
-                    return {std::move(shape), var_array};
-                  })
+      .def_static(
+          "from_bools",
+          [](Shape shape, std::vector<bool> array) -> Variant {
+            return {std::move(shape), VarArray(array.begin(), array.end())};
+          })
       .def_static(
           "from_int8s",
           [](Shape shape, std::vector<int8_t> array) -> Variant {
