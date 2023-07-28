@@ -6,8 +6,6 @@ option(DB_BUILD_TESTS "Enable unit tests" OFF)
 
 set(TARGET_NAME ${PROJECT_NAME})
 
-set(CMAKE_OSX_DEPLOYMENT_TARGET "10.13")
-
 add_library(${TARGET_NAME} INTERFACE)
 add_library(${TARGET_NAME}::${TARGET_NAME} ALIAS ${TARGET_NAME})
 

@@ -44,7 +44,7 @@ jobs:
         run: black --check .
 
   build_test:
-    needs: [ cpplint, black]
+    needs: [ cpplint, black ]
     runs-on: ${{ matrix.os }}
     name: Build and test C++ part
     strategy:
@@ -216,6 +216,8 @@ jobs:
 
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.13.1
+        env:
+          - MACOSX_DEPLOYMENT_TARGET: 10.13
 
       - name: Verify clean directory
         run: |
