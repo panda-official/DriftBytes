@@ -41,7 +41,9 @@ PYBIND11_MODULE(_drift_bytes, m) {
                   [](Shape shape, std::vector<bool> array) -> Variant {
                     VarArray var_array(array.size());
                     for (int i = 0; i < array.size(); ++i) {
-                      var_array[i] = static_cast<bool>(array[i]);
+                      var_array[i] = static_cast<bool>(
+                          array[i]);  // We do it because apple-clang converts
+                                      // bool to int
                     }
 
                     return {std::move(shape), std::move(var_array)};

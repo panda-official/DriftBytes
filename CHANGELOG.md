@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Use `set_` prefix for setters, [PR-2](https://github.com/panda-official/DriftBytes/pull/2)
+- Redesign API, [PR-3](https://github.com/panda-official/DriftBytes/pull/3)
 
 ## 0.1.0 - 2023-07-20
 
