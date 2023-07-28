@@ -44,9 +44,10 @@ static const std::vector<std::string> kSupportedType = {
 
 using Shape = std::vector<uint32_t>;
 
-using VarArray = std::vector<
+using VarElement =
     std::variant<bool, int8_t, uint8_t, int16_t, uint16_t, int32_t, uint32_t,
-                 int64_t, uint64_t, float, double, std::string>>;
+                 int64_t, uint64_t, float, double, std::string>;
+using VarArray = std::vector<VarElement>;
 
 class Variant {
  public:
@@ -77,16 +78,17 @@ class Variant {
     type_ = static_cast<Type>(data_[0].index());
   }
 
-  template <class T>
+  template <typename T>
   operator T() const {
-    if (type_ != static_cast<Type>(std::variant<T>().index())) {
-      throw std::runtime_error("Type mismatch");
+    auto casted = VarElement(T{}).index();
+    if (type_ != casted) {
+      throw std::runtime_error("Type mismatch: type '" + kSupportedType[type_] +
+                               "' casted to '" + kSupportedType[casted] + "'");
     }
 
     if (shape_ != Shape{1}) {
       throw std::runtime_error("Looks like it is a vector");
     }
-
     return std::get<T>(data_[0]);
   }
 
@@ -179,7 +181,9 @@ class InputBuffer {
     archive(version);
 
     if (version != kVersion) {
-      throw std::runtime_error("Version mismatch");
+      throw std::runtime_error("Version mismatch: received " +
+                               std::to_string(version) + ", expected " +
+                               std::to_string(kVersion));
     }
   }
 

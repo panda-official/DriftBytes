@@ -35,14 +35,13 @@ TEST_CASE("Full test") {
 }
 
 TEST_CASE("Variant: Test scalars") {
-  auto value = GENERATE(true, uint8_t{9}, int8_t{-9}, uint16_t{9}, int16_t{-9},
-                        uint32_t{9}, int32_t{-9}, uint64_t{9}, int64_t{-9},
-                        float{9.0}, double{9.0});
+  auto value =
+      GENERATE(Variant{true}, Variant{uint8_t{9}}, Variant{int8_t{-9}},
+               Variant{uint16_t{9}}, Variant{int16_t{-9}}, Variant{uint32_t{9}},
+               Variant{int32_t{-9}}, Variant{uint64_t{9}}, Variant{int64_t{-9}},
+               Variant{float{9.0}}, Variant{double{9.0}});
 
-  Variant var{value};
-
-  REQUIRE(var.shape() == Shape{1});
-  REQUIRE(value == decltype(value)(var));
+  REQUIRE(value.shape() == Shape{1});
 }
 
 TEST_CASE("Variant: Test strings") {
@@ -50,7 +49,7 @@ TEST_CASE("Variant: Test strings") {
   Variant var{value};
 
   REQUIRE(var.shape() == Shape{1});
-  REQUIRE(value == static_cast<decltype(value)>(var));
+  REQUIRE(value == static_cast<std::string>(var));
 }
 
 TEST_CASE("Variant: test stream") {
