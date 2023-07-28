@@ -35,7 +35,6 @@ class Variant:
         if isinstance(value, impl.Variant):
             # for internal use only to pop from InputBuffer
             self._variant = value
-            self._type = value.type()
             self._shape = value.shape()
             return
 
@@ -43,13 +42,13 @@ class Variant:
             f"Unsupported type: {kind}. Must be one of: {self.TYPES}"
         )
 
-        self._type = self._find_type(kind, type_error, value)
+        type = self._find_type(kind, type_error, value)
 
         if not isinstance(value, list):
             value = [value]
 
         self._shape = [len(value)]
-        self._make_variant(self._type, self._shape, value)
+        self._make_variant(type, self._shape, value)
 
     def _find_type(self, kind, type_error, value):  # pylint: disable=too-many-branches
         if kind is None:
@@ -111,7 +110,7 @@ class Variant:
     @property
     def type(self) -> str:
         """Get type"""
-        return self._type
+        return self._variant.type()
 
     @property
     def shape(self) -> List[int]:
@@ -121,32 +120,32 @@ class Variant:
     @property
     def value(self) -> SUPPORTED_TYPES:  # pylint: disable=too-many-branches
         """Get value"""
-        if self._type == "bool":
+        if self.type == "bool":
             ary = self._variant.to_bools()
-        elif self._type == "uint8":
+        elif self.type == "uint8":
             ary = self._variant.to_uint8s()
-        elif self._type == "int8":
+        elif self.type == "int8":
             ary = self._variant.to_int8s()
-        elif self._type == "uint16":
+        elif self.type == "uint16":
             ary = self._variant.to_uint16s()
-        elif self._type == "int16":
+        elif self.type == "int16":
             ary = self._variant.to_int16s()
-        elif self._type == "uint32":
+        elif self.type == "uint32":
             ary = self._variant.to_uint32s()
-        elif self._type == "int32":
+        elif self.type == "int32":
             ary = self._variant.to_int32s()
-        elif self._type == "uint64":
+        elif self.type == "uint64":
             ary = self._variant.to_uint64s()
-        elif self._type == "int64":
+        elif self.type == "int64":
             ary = self._variant.to_int64s()
-        elif self._type == "float32":
+        elif self.type == "float32":
             ary = self._variant.to_float32s()
-        elif self._type == "float64":
+        elif self.type == "float64":
             ary = self._variant.to_float64s()
-        elif self._type == "string":
+        elif self.type == "string":
             ary = self._variant.to_strings()
         else:
-            raise TypeError(f"Unsupported type: {self._type}")
+            raise TypeError(f"Unsupported type: {self.type}")
 
         if self.shape == [1]:
             return ary[0]
