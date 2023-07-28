@@ -37,11 +37,15 @@ PYBIND11_MODULE(_drift_bytes, m) {
 
   auto variant = py::class_<Variant>(m, "Variant");
   variant
-      .def_static(
-          "from_bools",
-          [](Shape shape, std::vector<bool> array) -> Variant {
-            return {std::move(shape), VarArray(array.begin(), array.end())};
-          })
+      .def_static("from_bools",
+                  [](Shape shape, std::vector<bool> array) -> Variant {
+                    VarArray var_array(array.size());
+                    for (int i = 0; i < array.size(); ++i) {
+                      var_array[i] = static_cast<bool>(array[i]);
+                    }
+
+                    return {std::move(shape), std::move(var_array)};
+                  })
       .def_static(
           "from_int8s",
           [](Shape shape, std::vector<int8_t> array) -> Variant {
