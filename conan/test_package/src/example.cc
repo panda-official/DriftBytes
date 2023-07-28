@@ -2,13 +2,18 @@
 
 #include <iostream>
 
-using drift_bytes::Bytes;
+using drift_bytes::InputBuffer;
+using drift_bytes::OutputBuffer;
+using drift_bytes::Variant;
 
 int main() {
-  uint8_t val{42};
-  auto bytes = Bytes();
-  bytes.set_scalar(val);
-  auto new_val = bytes.scalar<uint8_t>();
+  Variant some_value{42};
+
+  OutputBuffer buffer;
+  buffer.push_back(some_value);
+
+  InputBuffer input(buffer.str());
+  Variant new_val = input.pop();
 
   std::cout << new_val << std::endl;
 }
