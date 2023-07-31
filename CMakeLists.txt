@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(drift_bytes VERSION 0.1.0 LANGUAGES CXX)
+project(drift_bytes VERSION 0.2.0 LANGUAGES CXX)
 
 option(DB_BUILD_TESTS "Enable unit tests" OFF)
 
