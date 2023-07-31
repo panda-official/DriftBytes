@@ -51,6 +51,8 @@ using VarArray = std::vector<VarElement>;
 
 class Variant {
  public:
+  Variant() : Variant(false) {}
+
   Variant(Shape shape, VarArray data)
       : type_(), shape_(std::move(shape)), data_(std::move(data)) {
     if (data_.empty()) {
