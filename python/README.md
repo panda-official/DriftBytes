@@ -18,11 +18,14 @@ pip install drift-bytes
 ## Usage Example
 
 ```python
-from drift_bytes import Bytes
+from drift_bytes import Variant, InputBuffer, OutputBuffer
 
-byte_buffer = Bytes()
-byte_buffer.set_int8(42)
-val = byte_buffer.get_int8()
+out_buf = OutputBuffer()
+out_buf.push(Variant([1, 2, 3, 4, 5, 6]))
 
-print(val)
+in_buf = InputBuffer(out_buf.bytes())
+
+var = in_buf.pop()
+
+print(var.value)
 ```
