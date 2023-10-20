@@ -39,11 +39,11 @@ using drift_bytes::Variant;
 int main() {
   Variant some_value{42};
 
-  OutputBuffer buffer;
-  buffer.push_back(some_value);
+  OutputBuffer buffer(1);
+  buffer[0] = some_value;
 
   InputBuffer input(buffer.str());
-  Variant new_val = input.pop();
+  Variant new_val = input[0];
 
   std::cout << new_val << std::endl;
 }

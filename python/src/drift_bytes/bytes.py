@@ -1,6 +1,5 @@
 # pylint: disable=missing-docstring, too-many-public-methods, useless-super-delegation
 """Bindings for the C++ implementation of the Bytes class."""
-from types import NoneType
 from typing import List, Union, Optional
 
 import drift_bytes._drift_bytes as impl  # pylint: disable=import-error, no-name-in-module
