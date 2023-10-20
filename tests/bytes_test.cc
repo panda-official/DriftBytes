@@ -19,7 +19,8 @@ TEST_CASE("Full test") {
   Variant var2 =
       GENERATE(Variant({2}, {true, false}), Variant({2}, {1.0, 2.0}),
                Variant({2}, {"Hello", "World"}), Variant({3}, {1l, 2l, 3l}),
-               Variant({3}, {1ul, 2ul, 3ul}), Variant({3}, {1.0f, 2.0f, 3.0f}));
+               Variant({3}, {1ul, 2ul, 3ul}), Variant({3}, {1.0f, 2.0f, 3.0f}),
+               Variant());
 
   OutputBuffer out;
   out.push_back(var1);
@@ -58,4 +59,12 @@ TEST_CASE("Variant: test stream") {
   ss << var;
 
   REQUIRE(ss.str() == "Variant(type:int32, shape:{1,3,}, data:{1,2,3,})");
+}
+
+TEST_CASE("Variant: none") {
+  Variant var;
+  REQUIRE(var.type() == Type::kNone);
+  REQUIRE(var.shape() == Shape{0});
+  REQUIRE(var.data().empty());
+  REQUIRE(var.is_none());
 }

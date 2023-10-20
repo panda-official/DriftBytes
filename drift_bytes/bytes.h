@@ -36,11 +36,12 @@ enum Type : uint8_t {
   kFloat32 = 9,
   kFloat64 = 10,
   kString = 11,
+  kNone = 12,
 };
 
 static const std::vector<std::string> kSupportedType = {
-    "bool",   "int8",  "uint8",  "int16",   "uint16",  "int32",
-    "uint32", "int64", "uint64", "float32", "float64", "string"};
+    "bool",  "int8",   "uint8",   "int16",   "uint16", "int32", "uint32",
+    "int64", "uint64", "float32", "float64", "string", "none"};
 
 using Shape = std::vector<uint32_t>;
 
@@ -51,23 +52,19 @@ using VarArray = std::vector<VarElement>;
 
 class Variant {
  public:
-  Variant() : Variant(false) {}
+  Variant() : type_(kNone), shape_({0}), data_() {}
 
   Variant(Shape shape, VarArray data)
       : type_(), shape_(std::move(shape)), data_(std::move(data)) {
-    if (data_.empty()) {
-      throw std::out_of_range("Data is empty");
+    auto size = std::accumulate(shape_.begin(), shape_.end(), 1,
+                                std::multiplies<uint32_t>());
+    if (data_.size() != size) {
+      throw std::out_of_range("Shape and data size do not match");
     }
 
-    if (!shape_.empty()) {
-      bool match =
-          (std::accumulate(shape_.begin(), shape_.end(), 1,
-                           std::multiplies<uint32_t>()) == data_.size());
-      if (!match) {
-        throw std::out_of_range("Shape and data size do not match");
-      }
-    } else {
-      throw std::out_of_range("Shape is empty");
+    if (data_.empty()) {
+      type_ = kNone;
+      return;
     }
 
     type_ = static_cast<Type>(data_[0].index());
@@ -80,8 +77,14 @@ class Variant {
     type_ = static_cast<Type>(data_[0].index());
   }
 
+  [[nodiscard]] bool is_none() const { return type_ == kNone; }
+
   template <typename T>
   operator T() const {
+    if (type_ == kNone) {
+      throw std::runtime_error("Type is None");
+    }
+
     auto casted = VarElement(T{}).index();
     if (type_ != casted) {
       throw std::runtime_error("Type mismatch: type '" + kSupportedType[type_] +
@@ -159,6 +162,10 @@ class Variant {
         }
         case kString: {
           os << std::get<std::string>(value) << ",";
+          break;
+        }
+        case kNone: {
+          os << "None, ";
           break;
         }
       }
@@ -275,6 +282,10 @@ class InputBuffer {
           value = string_value;
           break;
         }
+        case kNone: {
+          throw std::runtime_error("None");
+        }
+
         default:
           throw std::runtime_error("Unknown type");
       }
@@ -338,6 +349,9 @@ class OutputBuffer {
           break;
         case kString:
           archive(std::get<std::string>(value));
+          break;
+        case kNone:
+          throw std::runtime_error("None");
           break;
         default:
           throw std::runtime_error("Unknown type");
