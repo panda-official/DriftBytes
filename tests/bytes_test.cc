@@ -22,17 +22,15 @@ TEST_CASE("Full test") {
                Variant({3}, {1ul, 2ul, 3ul}), Variant({3}, {1.0f, 2.0f, 3.0f}),
                Variant());
 
-  OutputBuffer out;
-  out.push_back(var1);
-  out.push_back(var2);
+  OutputBuffer out(2);
+  out[0] = var1;
+  out[1] = var2;
 
   InputBuffer in(out.str());
 
-  REQUIRE(in.pop() == var1);
+  REQUIRE(in[0] == var1);
+  REQUIRE(in[1] == var2);
   REQUIRE_FALSE(in.empty());
-
-  REQUIRE(in.pop() == var2);
-  REQUIRE(in.empty());
 }
 
 TEST_CASE("Variant: Test scalars") {
