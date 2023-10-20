@@ -127,7 +127,9 @@ class Variant {
   }
 
   [[nodiscard]] Type type() const { return type_; }
+
   [[nodiscard]] const Shape &shape() const { return shape_; }
+
   [[nodiscard]] const VarArray &data() const { return data_; }
 
   bool operator==(const Variant &rhs) const {
@@ -339,7 +341,7 @@ class InputBuffer {
    * @brief pop a Variant from the buffer
    * @return
    */
-  [[deprecated("Use operator[]")]] Variant pop() {
+  Variant pop() {
     if (data_.empty()) {
       throw std::runtime_error("Buffer is empty");
     }
@@ -352,10 +354,16 @@ class InputBuffer {
 
   [[nodiscard]] bool empty() const { return data_.empty(); }
 
+  [[nodiscard]] size_t size() const { return data_.size(); }
+
  private:
   std::vector<Variant> data_;
 };
 
+/**
+ * @brief The OutputBuffer class
+ * @details This class is used to serialize an array of Variants into a string
+ */
 class OutputBuffer {
  public:
   OutputBuffer() : data_() {}
@@ -421,9 +429,7 @@ class OutputBuffer {
     return buffer.str();
   }
 
-  [[deprecated("Use operator[]")]] void push_back(const Variant &variant) {
-    data_.push_back(variant);
-  }
+  void push_back(const Variant &variant) { data_.push_back(variant); }
 
   Variant &operator[](size_t index) { return data_.at(index); }
 

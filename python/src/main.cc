@@ -36,7 +36,7 @@ PYBIND11_MODULE(_drift_bytes, m) {
         []() -> std::vector<std::string> { return kSupportedType; });
 
   auto variant = py::class_<Variant>(m, "Variant");
-  variant
+  variant.def_static("from_none", []() -> Variant { return {}; })
       .def_static("from_bools",
                   [](Shape shape, std::vector<bool> array) -> Variant {
                     VarArray var_array(array.size());
@@ -162,12 +162,21 @@ PYBIND11_MODULE(_drift_bytes, m) {
       .def_static("from_bytes",
                   [](py::bytes bytes) { return InputBuffer(std::move(bytes)); })
       .def("pop", [](InputBuffer &buffer) -> Variant { return buffer.pop(); })
-      .def("empty", [](InputBuffer &buffer) -> bool { return buffer.empty(); });
+      .def("get",
+           [](InputBuffer &buffer, size_t index) -> Variant {
+             return buffer[index];
+           })
+      .def("empty", [](InputBuffer &buffer) -> bool { return buffer.empty(); })
+      .def("size", [](InputBuffer &buffer) -> size_t { return buffer.size(); });
 
   auto output_buffer = py::class_<OutputBuffer>(m, "OutputBuffer");
-  output_buffer.def(py::init())
+  output_buffer.def(py::init([](size_t size) { return OutputBuffer(size); }))
       .def("push", [](OutputBuffer &buffer,
                       const Variant &variant) { buffer.push_back(variant); })
+      .def("set", [](OutputBuffer &buffer, size_t index,
+                     const Variant &variant) { buffer[index] = variant; })
       .def("bytes",
-           [](OutputBuffer &buffer) -> py::bytes { return buffer.str(); });
+           [](OutputBuffer &buffer) -> py::bytes { return buffer.str(); })
+      .def("size",
+           [](OutputBuffer &buffer) -> size_t { return buffer.size(); });
 }

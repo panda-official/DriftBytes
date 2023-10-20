@@ -28,9 +28,9 @@ TEST_CASE("Full test") {
 
   InputBuffer in(out.str());
 
+  REQUIRE(in.size() == 2);
   REQUIRE(in[0] == var1);
   REQUIRE(in[1] == var2);
-  REQUIRE_FALSE(in.empty());
 }
 
 TEST_CASE("Variant: Test scalars") {
