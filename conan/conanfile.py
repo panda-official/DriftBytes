@@ -10,7 +10,7 @@ required_conan_version = ">=1.58"
 
 class WaveletBufferConan(ConanFile):
     name = "drift_bytes"
-    version = "0.2.0"
+    version = "0.3.0"
     license = "MPL-2.0"
     author = "PANDA GmbH"
     description = "A serializer for typed data in the Drift infrastructure"
