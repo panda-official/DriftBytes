@@ -6,6 +6,7 @@ from drift_bytes import Variant
 @pytest.mark.parametrize(
     "kind, value",
     [
+        ("none", None),
         ("bool", True),
         ("int32", 1),
         ("float32", 1.0),
@@ -25,6 +26,7 @@ def test_init(kind, value):
 @pytest.mark.parametrize(
     "kind, value",
     [
+        ("none", None),
         ("bool", True),
         ("int64", 1),
         ("float64", 1.0),
